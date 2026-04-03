@@ -1,0 +1,50 @@
+{
+  "name": "toolscore",
+  "version": "0.1.0",
+  "description": "Benchmark LLM tool-calling reliability against any OpenAI-compatible endpoint",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "toolscore": "./dist/cli/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node_modules/.bin/tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "llm",
+    "benchmark",
+    "tool-calling",
+    "function-calling",
+    "openai",
+    "ollama",
+    "cli"
+  ],
+  "author": "bobhns",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "openai": "^4.67.0",
+    "ora": "^8.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

@@ -1,0 +1,434 @@
+[
+  {
+    "id": "arg_001",
+    "dimension": "args",
+    "prompt": "Convert 100 US dollars to euros",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "convert_currency",
+          "description": "Convert an amount from one currency to another",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "amount": { "type": "number", "description": "Amount to convert" },
+              "from_currency": { "type": "string", "description": "Source currency code (ISO 4217)" },
+              "to_currency": { "type": "string", "description": "Target currency code (ISO 4217)" }
+            },
+            "required": ["amount", "from_currency", "to_currency"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "convert_currency", "args": { "amount": 100, "from_currency": "USD", "to_currency": "EUR" }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_002",
+    "dimension": "args",
+    "prompt": "Get the weather in Paris in celsius",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get weather for a location",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": { "type": "string" },
+              "units": { "type": "string", "enum": ["celsius", "fahrenheit"] }
+            },
+            "required": ["city", "units"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "get_weather", "args": { "city": "Paris", "units": "celsius" }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_003",
+    "dimension": "args",
+    "prompt": "Search for 'machine learning' articles, return the top 5 results",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "search_articles",
+          "description": "Search for articles by keyword",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": { "type": "string" },
+              "limit": { "type": "number", "description": "Max results to return" },
+              "sort_by": { "type": "string", "enum": ["relevance", "date", "popularity"] }
+            },
+            "required": ["query"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "search_articles", "args": { "query": "machine learning", "limit": 5 }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_004",
+    "dimension": "args",
+    "prompt": "Create a task called 'Fix login bug' with high priority",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_task",
+          "description": "Create a new task in the project management system",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "priority": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+              "description": { "type": "string" },
+              "assignee": { "type": "string" }
+            },
+            "required": ["title", "priority"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "create_task", "args": { "title": "Fix login bug", "priority": "high" }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_005",
+    "dimension": "args",
+    "prompt": "Get the coordinates for the Eiffel Tower",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "geocode",
+          "description": "Get latitude and longitude for a location or address",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "address": { "type": "string", "description": "Location or address to geocode" }
+            },
+            "required": ["address"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "geocode", "args": { "address": "Eiffel Tower" }, "argsMatchMode": "fuzzy" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_006",
+    "dimension": "args",
+    "prompt": "Set the volume to 75 percent",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "set_system_volume",
+          "description": "Set the system audio volume",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "level": { "type": "number", "description": "Volume level from 0 to 100" },
+              "mute": { "type": "boolean", "description": "Whether to mute the audio" }
+            },
+            "required": ["level"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "set_system_volume", "args": { "level": 75 }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_007",
+    "dimension": "args",
+    "prompt": "Book a flight from New York to London for 2 adults on December 25th",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "search_flights",
+          "description": "Search for available flights",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "origin": { "type": "string", "description": "Departure city or airport code" },
+              "destination": { "type": "string", "description": "Arrival city or airport code" },
+              "departure_date": { "type": "string", "description": "Departure date in YYYY-MM-DD format" },
+              "passengers": { "type": "number", "description": "Number of passengers" }
+            },
+            "required": ["origin", "destination", "departure_date"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "search_flights", "args": { "origin": "New York", "destination": "London", "passengers": 2 }, "argsMatchMode": "subset" }]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "arg_008",
+    "dimension": "args",
+    "prompt": "Send a POST request to https://api.example.com/users with body {\"name\": \"Alice\"}",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "http_request",
+          "description": "Make an HTTP request",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "method": { "type": "string", "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"] },
+              "url": { "type": "string" },
+              "body": { "type": "string", "description": "Request body as JSON string" },
+              "headers": { "type": "object" }
+            },
+            "required": ["method", "url"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "http_request", "args": { "method": "POST", "url": "https://api.example.com/users" }, "argsMatchMode": "subset" }]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "arg_009",
+    "dimension": "args",
+    "prompt": "Calculate the square root of 144",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "calculate",
+          "description": "Perform mathematical calculations",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "operation": { "type": "string", "enum": ["add", "subtract", "multiply", "divide", "sqrt", "power", "log"] },
+              "a": { "type": "number", "description": "First operand" },
+              "b": { "type": "number", "description": "Second operand (optional for unary operations)" }
+            },
+            "required": ["operation", "a"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "calculate", "args": { "operation": "sqrt", "a": 144 }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "arg_010",
+    "dimension": "args",
+    "prompt": "Read the file at /home/user/notes.txt",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "read_file",
+          "description": "Read the contents of a file",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string", "description": "Absolute or relative file path" },
+              "encoding": { "type": "string", "enum": ["utf8", "base64", "hex"] }
+            },
+            "required": ["path"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "read_file", "args": { "path": "/home/user/notes.txt" }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_011",
+    "dimension": "args",
+    "prompt": "Create a new user with username 'jsmith', email 'john@smith.com', and admin role",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_user",
+          "description": "Create a new user in the system",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "username": { "type": "string" },
+              "email": { "type": "string" },
+              "role": { "type": "string", "enum": ["user", "moderator", "admin"] },
+              "password": { "type": "string" }
+            },
+            "required": ["username", "email", "role"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "create_user", "args": { "username": "jsmith", "email": "john@smith.com", "role": "admin" }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_012",
+    "dimension": "args",
+    "prompt": "Get the top 10 trending items from the 'electronics' category",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_trending",
+          "description": "Get trending items in a category",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "category": { "type": "string" },
+              "limit": { "type": "number" },
+              "time_period": { "type": "string", "enum": ["day", "week", "month"] }
+            },
+            "required": ["category"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "get_trending", "args": { "category": "electronics", "limit": 10 }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_013",
+    "dimension": "args",
+    "prompt": "Resize the image at /photos/vacation.jpg to 800x600 pixels",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "resize_image",
+          "description": "Resize an image to specified dimensions",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "input_path": { "type": "string" },
+              "width": { "type": "number", "description": "Target width in pixels" },
+              "height": { "type": "number", "description": "Target height in pixels" },
+              "maintain_aspect_ratio": { "type": "boolean" }
+            },
+            "required": ["input_path", "width", "height"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "resize_image", "args": { "input_path": "/photos/vacation.jpg", "width": 800, "height": 600 }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_014",
+    "dimension": "args",
+    "prompt": "Look up the user with ID 42 in the database",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_user_by_id",
+          "description": "Retrieve a user record by their unique ID",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": { "type": "number", "description": "Numeric user ID" },
+              "include_deleted": { "type": "boolean", "description": "Whether to include soft-deleted users" }
+            },
+            "required": ["user_id"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "get_user_by_id", "args": { "user_id": 42 }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_015",
+    "dimension": "args",
+    "prompt": "Send a Slack message to the #general channel saying 'Deployment complete'",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "send_slack_message",
+          "description": "Send a message to a Slack channel or user",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "channel": { "type": "string", "description": "Channel name (with #) or user ID" },
+              "text": { "type": "string", "description": "Message text" },
+              "thread_ts": { "type": "string", "description": "Thread timestamp to reply to" }
+            },
+            "required": ["channel", "text"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "send_slack_message", "args": { "channel": "#general", "text": "Deployment complete" }, "argsMatchMode": "exact" }]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "arg_016",
+    "dimension": "args",
+    "prompt": "Delete all log files older than 30 days from /var/log",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "cleanup_files",
+          "description": "Delete files matching criteria in a directory",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "directory": { "type": "string" },
+              "pattern": { "type": "string", "description": "File glob pattern" },
+              "older_than_days": { "type": "number", "description": "Delete files older than N days" },
+              "dry_run": { "type": "boolean", "description": "If true, only simulate, don't delete" }
+            },
+            "required": ["directory"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [{ "name": "cleanup_files", "args": { "directory": "/var/log", "older_than_days": 30 }, "argsMatchMode": "subset" }]
+    },
+    "difficulty": "medium"
+  }
+]

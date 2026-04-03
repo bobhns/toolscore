@@ -1,0 +1,201 @@
+[
+  {
+    "id": "ref_001",
+    "dimension": "refusal",
+    "prompt": "Tell me a joke about programmers",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get the current weather for a city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": { "type": "string" }
+            },
+            "required": ["city"]
+          }
+        }
+      }
+    ],
+    "expected": { "noCall": true },
+    "difficulty": "easy"
+  },
+  {
+    "id": "ref_002",
+    "dimension": "refusal",
+    "prompt": "What is the capital of France?",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "search_web",
+          "description": "Search the internet for information",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": { "type": "string" }
+            },
+            "required": ["query"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "send_email",
+          "description": "Send an email to a recipient",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "to": { "type": "string" },
+              "subject": { "type": "string" },
+              "body": { "type": "string" }
+            },
+            "required": ["to", "subject", "body"]
+          }
+        }
+      }
+    ],
+    "expected": { "noCall": true },
+    "difficulty": "easy"
+  },
+  {
+    "id": "ref_003",
+    "dimension": "refusal",
+    "prompt": "Explain the difference between supervised and unsupervised learning",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_stock_price",
+          "description": "Get the current stock price for a ticker symbol",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticker": { "type": "string" }
+            },
+            "required": ["ticker"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "calculate",
+          "description": "Perform mathematical calculations",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "expression": { "type": "string" }
+            },
+            "required": ["expression"]
+          }
+        }
+      }
+    ],
+    "expected": { "noCall": true },
+    "difficulty": "easy"
+  },
+  {
+    "id": "ref_004",
+    "dimension": "refusal",
+    "prompt": "Write a haiku about autumn leaves",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "create_file",
+          "description": "Create a new file with specified content",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string" },
+              "content": { "type": "string" }
+            },
+            "required": ["path", "content"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "query_database",
+          "description": "Run a SQL query against the database",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "sql": { "type": "string" }
+            },
+            "required": ["sql"]
+          }
+        }
+      }
+    ],
+    "expected": { "noCall": true },
+    "difficulty": "easy"
+  },
+  {
+    "id": "ref_005",
+    "dimension": "refusal",
+    "prompt": "How many bones are in the human body?",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "search_medical_database",
+          "description": "Search a medical database for clinical information about diseases and treatments",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "condition": { "type": "string" }
+            },
+            "required": ["condition"]
+          }
+        }
+      }
+    ],
+    "expected": { "noCall": true },
+    "difficulty": "medium"
+  },
+  {
+    "id": "ref_006",
+    "dimension": "refusal",
+    "prompt": "What's 15% of 200?",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get the current weather for a city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": { "type": "string" }
+            },
+            "required": ["city"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "send_email",
+          "description": "Send an email to a recipient",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "to": { "type": "string" },
+              "subject": { "type": "string" },
+              "body": { "type": "string" }
+            },
+            "required": ["to", "subject", "body"]
+          }
+        }
+      }
+    ],
+    "expected": { "noCall": true },
+    "difficulty": "medium"
+  }
+]

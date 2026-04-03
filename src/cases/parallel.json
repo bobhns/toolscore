@@ -1,0 +1,250 @@
+[
+  {
+    "id": "par_001",
+    "dimension": "parallel",
+    "prompt": "Get the weather in London and Tokyo at the same time",
+    "system": "You may call multiple tools simultaneously when you need information from multiple sources.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get current weather for a city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": { "type": "string" }
+            },
+            "required": ["city"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "get_weather", "args": { "city": "London" }, "argsMatchMode": "subset" },
+        { "name": "get_weather", "args": { "city": "Tokyo" }, "argsMatchMode": "subset" }
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "par_002",
+    "dimension": "parallel",
+    "prompt": "Look up the stock prices for Apple and Google simultaneously",
+    "system": "You may call multiple tools simultaneously when you need information from multiple sources.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_stock_price",
+          "description": "Get current stock price for a ticker symbol",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticker": { "type": "string" }
+            },
+            "required": ["ticker"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "get_stock_price", "args": { "ticker": "AAPL" }, "argsMatchMode": "subset" },
+        { "name": "get_stock_price", "args": { "ticker": "GOOGL" }, "argsMatchMode": "subset" }
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "par_003",
+    "dimension": "parallel",
+    "prompt": "Fetch the user profile for user IDs 101 and 202 at the same time",
+    "system": "You may call multiple tools simultaneously when parallel execution is beneficial.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_user_profile",
+          "description": "Retrieve a user's profile by their ID",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": { "type": "number" }
+            },
+            "required": ["user_id"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "get_user_profile", "args": { "user_id": 101 }, "argsMatchMode": "exact" },
+        { "name": "get_user_profile", "args": { "user_id": 202 }, "argsMatchMode": "exact" }
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "par_004",
+    "dimension": "parallel",
+    "prompt": "Search for news about climate change and search for news about renewable energy",
+    "system": "You may call multiple tools simultaneously when you need information from multiple sources.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "search_news",
+          "description": "Search for news articles about a topic",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": { "type": "string" }
+            },
+            "required": ["query"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "search_news", "args": { "query": "climate change" }, "argsMatchMode": "subset" },
+        { "name": "search_news", "args": { "query": "renewable energy" }, "argsMatchMode": "subset" }
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "par_005",
+    "dimension": "parallel",
+    "prompt": "I need the weather in New York and also translate 'good morning' to French",
+    "system": "You may call multiple tools simultaneously when you need different information.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_weather",
+          "description": "Get current weather for a city",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": { "type": "string" }
+            },
+            "required": ["city"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "translate_text",
+          "description": "Translate text to another language",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "text": { "type": "string" },
+              "target_language": { "type": "string" }
+            },
+            "required": ["text", "target_language"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "get_weather", "args": { "city": "New York" }, "argsMatchMode": "subset" },
+        { "name": "translate_text", "args": { "text": "good morning", "target_language": "fr" }, "argsMatchMode": "subset" }
+      ]
+    },
+    "difficulty": "hard"
+  },
+  {
+    "id": "par_006",
+    "dimension": "parallel",
+    "prompt": "Look up the definitions of 'ephemeral' and 'transient' at the same time",
+    "system": "You may call multiple tools simultaneously when the operations are independent.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "lookup_definition",
+          "description": "Look up the definition of a word",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "word": { "type": "string" }
+            },
+            "required": ["word"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "lookup_definition", "args": { "word": "ephemeral" }, "argsMatchMode": "subset" },
+        { "name": "lookup_definition", "args": { "word": "transient" }, "argsMatchMode": "subset" }
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "par_007",
+    "dimension": "parallel",
+    "prompt": "Get the repository stats for 'facebook/react' and 'vuejs/vue' at the same time",
+    "system": "You may call multiple tools simultaneously when you need information from multiple sources.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_github_repo",
+          "description": "Get statistics for a GitHub repository",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "repo": { "type": "string", "description": "Repository in 'owner/name' format" }
+            },
+            "required": ["repo"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "get_github_repo", "args": { "repo": "facebook/react" }, "argsMatchMode": "subset" },
+        { "name": "get_github_repo", "args": { "repo": "vuejs/vue" }, "argsMatchMode": "subset" }
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "par_008",
+    "dimension": "parallel",
+    "prompt": "Get the exchange rates for EUR to USD and GBP to USD simultaneously",
+    "system": "You may call multiple tools simultaneously when you need information from multiple sources.",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_exchange_rate",
+          "description": "Get the current exchange rate between two currencies",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "from_currency": { "type": "string" },
+              "to_currency": { "type": "string" }
+            },
+            "required": ["from_currency", "to_currency"]
+          }
+        }
+      }
+    ],
+    "expected": {
+      "calls": [
+        { "name": "get_exchange_rate", "args": { "from_currency": "EUR", "to_currency": "USD" }, "argsMatchMode": "exact" },
+        { "name": "get_exchange_rate", "args": { "from_currency": "GBP", "to_currency": "USD" }, "argsMatchMode": "exact" }
+      ]
+    },
+    "difficulty": "medium"
+  }
+]
