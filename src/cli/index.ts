@@ -7,6 +7,8 @@ import { getCaseCounts, getAllCases } from '../cases/index.js'
 import { parseModel } from '../providers/index.js'
 import type { Dimension, RunOptions } from '../types/index.js'
 import { VERSION } from '../version.js'
+import { saveRun } from '../core/history.js'
+import { makeHistoryCommand } from './history.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -16,6 +18,9 @@ program
   .name('toolscore')
   .description('Benchmark LLM tool-calling reliability against any OpenAI-compatible endpoint')
   .version(VERSION)
+
+// Register subcommands
+program.addCommand(makeHistoryCommand())
 
 program
   .option('-m, --model <model>', 'Model to benchmark (e.g. ollama/llama3.1:8b, openai/gpt-4o)')
@@ -117,6 +122,13 @@ program.action(async (options) => {
 
     spinner.stop()
     clearProgress()
+
+    // Auto-save to history
+    try {
+      saveRun(result)
+    } catch {
+      // Never let history errors break the main flow
+    }
 
     // Output based on format
     const format = options.format ?? 'terminal'
