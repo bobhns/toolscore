@@ -25,10 +25,12 @@ export async function runBenchmark(
 
   const endpoint = getEndpointDisplay(config)
 
-  const cases = selectCases(
-    options.cases,
-    options.dimensions
-  )
+  // Use custom cases from --pack if provided, otherwise fall back to built-in suite
+  const cases = options.customCases
+    ? (options.cases && options.cases < options.customCases.length
+        ? options.customCases.slice(0, options.cases)
+        : options.customCases)
+    : selectCases(options.cases, options.dimensions)
 
   callbacks?.onStart?.(cases.length, config.model, endpoint)
 
