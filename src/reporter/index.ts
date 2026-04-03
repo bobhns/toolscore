@@ -131,7 +131,7 @@ export function toJSON(result: ToolscoreResult, pretty = true): string {
 }
 
 /**
- * Render result as Markdown table
+ * Render result as Markdown full report
  */
 export function toMarkdown(result: ToolscoreResult): string {
   const { score, grade, dimensions, stats, durationMs, model, modelResolved } = result
@@ -162,6 +162,38 @@ export function toMarkdown(result: ToolscoreResult): string {
   if (stats.errors > 0) {
     lines.push(`**Errors:** ${stats.errors}`)
   }
+
+  return lines.join('\n')
+}
+
+/**
+ * Render a single community leaderboard table row for pasting into the README.
+ *
+ * Format matches the community-results table:
+ * | Model | Score | Selection | Args | Parallel | Refusal | Recovery | Version |
+ */
+export function toTableRow(result: ToolscoreResult, version: string): string {
+  const { score, grade, dimensions, model } = result
+  const d = dimensions
+
+  const sel = d.selection.total > 0 ? `${d.selection.score}%` : '—'
+  const args = d.args.total > 0 ? `${d.args.score}%` : '—'
+  const par = d.parallel.total > 0 ? `${d.parallel.score}%` : '—'
+  const ref = d.refusal.total > 0 ? `${d.refusal.score}%` : '—'
+  const rec = d.recovery.total > 0 ? `${d.recovery.score}%` : '—'
+
+  const modelDisplay = model.includes('/') ? model.split('/').slice(1).join('/') : model
+  const badgeColor = score >= 80 ? 'brightgreen' : score >= 60 ? 'yellow' : score >= 40 ? 'orange' : 'red'
+  const badge = `![${score}](https://img.shields.io/badge/toolscore-${score}%2F100-${badgeColor})`
+
+  const lines: string[] = []
+  lines.push(`<!-- paste this row into the Community Results table in README.md -->`)
+  lines.push(`| ${modelDisplay} | ${badge} | ${sel} | ${args} | ${par} | ${ref} | ${rec} | v${version} |`)
+  lines.push(``)
+  lines.push(`Badge markdown (embed in your model's README):`)
+  lines.push(`\`\`\``)
+  lines.push(`[![toolscore: ${score}/100](${toBadgeUrl(result)})](https://github.com/bobhns/toolscore)`)
+  lines.push(`\`\`\``)
 
   return lines.join('\n')
 }

@@ -177,11 +177,16 @@ Requires Node.js 18+.
 
 ## Community Results
 
-| Model | Score | Selection | Args | Parallel | Refusal | Recovery |
-|-------|-------|-----------|------|----------|---------|----------|
-| *Submit yours via PR* | — | — | — | — | — | — |
+| Model | Score | Selection | Args | Parallel | Refusal | Recovery | Version |
+|-------|-------|-----------|------|----------|---------|----------|---------|
+| *Submit yours via PR* | — | — | — | — | — | — | — |
 
-Run `toolscore --model <your-model>` and open a PR to add your result.
+**Add your result:**
+1. Run `npx toolscore --model <your-model> --format table-row`
+2. Copy the table row from the output
+3. Open a PR adding your row
+
+The `--format table-row` output also generates a badge you can embed in your model's README.
 
 ## License
 
