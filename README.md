@@ -50,6 +50,82 @@ npx toolscore --model ollama/llama3.1:8b --dimension parallel
 
 Every test case has a deterministic correct answer. No LLM evaluator involved.
 
+## How Scoring Works
+
+Each dimension tests a distinct failure mode in tool-calling behavior. Here's what each one means and how pass/fail is determined:
+
+### 1. Selection — Did it call the right function?
+
+The model is given a user prompt and a list of available tools. It must choose the correct one.
+
+**Pass:** Asked to schedule a meeting → model calls `create_event`
+
+**Fail:** Model calls `list_events` instead, hallucinates a function name like `schedule_meeting` that doesn't exist, or refuses to call any tool at all.
+
+Selection failures are often the most visible — the wrong tool call produces the wrong result regardless of how well the arguments are filled in.
+
+---
+
+### 2. Args — Correct values, correct types, no hallucinated fields?
+
+The model must populate the tool's parameters with the right values and types, using only fields that exist in the schema.
+
+**Pass:**
+```json
+{ "title": "Team standup", "datetime": "2026-04-05T09:00:00Z" }
+```
+
+**Fail:**
+```json
+{ "title": "Team standup", "datetime": "next Tuesday" }
+```
+or adding a field not in the schema:
+```json
+{ "title": "Team standup", "datetime": "2026-04-05T09:00:00Z", "reminder": true }
+```
+
+Arg failures include: wrong type (string instead of number), ambiguous natural language instead of structured values, missing required fields, and hallucinated optional fields.
+
+---
+
+### 3. Parallel — Did it call two tools when both were needed?
+
+Some requests require multiple tool calls in a single response. The model must recognize when both are needed and issue them together.
+
+**Pass:** Two separate tool calls in the same response — e.g., `get_weather` and `get_calendar` when asked "What's the weather and do I have meetings tomorrow?"
+
+**Fail:** Only one call made, or calls issued sequentially across multiple turns when parallel was expected.
+
+Parallel call failures often appear as incomplete answers — the model does half the work and misses the rest.
+
+---
+
+### 4. Refusal — Did it correctly NOT call a tool when inappropriate?
+
+Not every user message requires a tool call. The model should recognize when a question is better answered in prose and resist calling an irrelevant tool.
+
+**Pass:** Asked "What does the `create_event` function do?" → model explains it in prose without making any tool call.
+
+**Fail:** Model calls `create_event` with hallucinated arguments to appear helpful, or fabricates a tool response it never received.
+
+Refusal failures often indicate over-triggering — a model that calls tools even when the context doesn't warrant it.
+
+---
+
+### 5. Recovery — Given a tool error response, did it retry with corrected args?
+
+> **This is toolscore's unique contribution.** BFCL and other benchmarks test what the model sends. toolscore also tests what the model does when it gets back an error.
+
+The model makes a tool call, receives an error response from the tool, and must self-correct and retry with valid arguments.
+
+**Pass:** After receiving `{"error": "invalid date format"}`, model retries the same call with a corrected ISO 8601 datetime — `"2026-04-05T09:00:00Z"` instead of `"next Tuesday"`.
+
+**Fail:** Model gives up and replies to the user without retrying, hallucinates a success response it never received, or loops infinitely with the same broken arguments.
+
+Recovery separates models that can operate in real agentic loops from models that only work in one-shot settings. A model that can't recover from tool errors will silently fail in production.
+
+---
+
 ## Score Output
 
 ```
