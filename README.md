@@ -6,12 +6,14 @@
 </p>
 
 <p align="center">
-  Benchmark LLM tool-calling reliability in your terminal.
+  Does your model know <em>when</em> to call a tool — and when not to?
 </p>
 
 ---
 
-Not all models call tools the same way. `toolscore` runs 50 deterministic test cases across 5 dimensions — selection, arg accuracy, parallel calls, refusal, and recovery — and gives you a scored report. No vibes. No LLM-as-judge. Just pass/fail.
+The hard part of tool-calling isn't formatting JSON. It's judgment: calling the right tool when it's needed, and staying quiet when it isn't. A model that calls `get_weather` when the weather is already in the prompt, or ignores a negation like "don't check the calendar", will cause real problems in production.
+
+`toolscore` runs 50 deterministic test cases across 5 dimensions — selection, arg accuracy, parallel calls, refusal (judgment), and recovery — and gives you a scored report. No vibes. No LLM-as-judge. Just pass/fail.
 
 ```bash
 npx toolscore --model ollama/llama3.1:8b
@@ -49,6 +51,18 @@ npx toolscore --model ollama/llama3.1:8b --dimension parallel
 | **Recovery** | 8 | 15% | Retried correctly after tool error? |
 
 Every test case has a deterministic correct answer. No LLM evaluator involved.
+
+## The Judgment Problem
+
+Most benchmarks only test whether a model *can* call a tool correctly. `toolscore` also tests whether a model knows *when not to*.
+
+The **refusal dimension** covers three failure modes that break real agents:
+
+- **Keyword trigger resistance** — the prompt mentions "weather" but calling `get_weather` is wrong in context
+- **Negation handling** — "don't check the calendar" should not trigger `check_calendar`
+- **Redundant information** — weather data is already in the prompt; calling `get_weather` again is wasteful and wrong
+
+Failing these cases isn't a minor issue. An agent that acts incorrectly costs money, sends the wrong message, or modifies data it shouldn't. These are the prompts where bad models fail silently.
 
 ## Score Output
 
@@ -174,6 +188,7 @@ Requires Node.js 18+.
 | npm install | ✗ | ✓ |
 | CI integration | ✗ | ✓ |
 | Recovery testing | ✗ | ✓ |
+| Judgment / refusal testing | Partial | ✓ |
 
 ## Community Results
 
