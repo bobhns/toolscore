@@ -7,6 +7,7 @@ import { getCaseCounts, getAllCases } from '../cases/index.js'
 import { parseModel } from '../providers/index.js'
 import type { Dimension, RunOptions } from '../types/index.js'
 import { VERSION } from '../version.js'
+import { loadPack, packCasesToTestCases } from '../core/pack.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -31,6 +32,7 @@ program
   .option('--list-cases', 'List test case counts per dimension')
   .option('--verbose', 'Show per-case results')
   .option('--fail-below <score>', 'Exit with code 1 if score is below this threshold', parseInt)
+  .option('--pack <path>', 'Benchmark using a custom pack JSON file instead of the built-in suite')
 
 program.action(async (options) => {
   // List cases mode
@@ -55,6 +57,21 @@ program.action(async (options) => {
     ? [options.dimension as Dimension]
     : undefined
 
+  // Load custom pack if --pack is set
+  let packTestCases: import('../types/index.js').TestCase[] | undefined
+  if (options.pack) {
+    try {
+      const pack = loadPack(options.pack)
+      packTestCases = packCasesToTestCases(pack, dims)
+      console.log()
+      console.log(chalk.cyan(`  Pack: ${pack.name}`) + chalk.gray(` (v${pack.version})  —  ${packTestCases.length} cases`))
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error(chalk.red(`  Error loading pack: ${msg}`))
+      process.exit(1)
+    }
+  }
+
   const runOptions: RunOptions = {
     model: options.model,
     apiKey: options.apiKey,
@@ -65,6 +82,7 @@ program.action(async (options) => {
     concurrency: options.concurrency ?? 3,
     dryRun: options.dryRun,
     verbose: options.verbose,
+    customCases: packTestCases,
   }
 
   // Dry run mode
@@ -222,11 +240,15 @@ function printCaseList(): void {
 
 function printDryRun(options: RunOptions): void {
   const config = parseModel(options.model, { apiKey: options.apiKey, baseUrl: options.baseUrl })
-  const cases = getAllCases()
 
-  const dims = options.dimensions
-    ? cases.filter(c => options.dimensions!.includes(c.dimension as Dimension))
-    : cases
+  // Use custom cases from --pack if provided
+  const allCases = options.customCases ?? getAllCases()
+
+  const dims = options.customCases
+    ? allCases  // already filtered by packCasesToTestCases
+    : (options.dimensions
+        ? allCases.filter(c => options.dimensions!.includes(c.dimension as Dimension))
+        : allCases)
 
   console.log()
   console.log(chalk.bold.white('  toolscore dry-run'))

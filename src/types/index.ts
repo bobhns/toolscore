@@ -170,4 +170,6 @@ export interface RunOptions {
   concurrency?: number
   dryRun?: boolean
   verbose?: boolean
+  /** Custom test cases (e.g. from a --pack file). When set, overrides built-in suite. */
+  customCases?: TestCase[]
 }
