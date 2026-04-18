@@ -7,6 +7,7 @@ import { getCaseCounts, getAllCases } from '../cases/index.js'
 import { parseModel } from '../providers/index.js'
 import type { Dimension, RunOptions } from '../types/index.js'
 import { VERSION } from '../version.js'
+import { formatBadgeOutput } from './badge.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -31,6 +32,7 @@ program
   .option('--list-cases', 'List test case counts per dimension')
   .option('--verbose', 'Show per-case results')
   .option('--fail-below <score>', 'Exit with code 1 if score is below this threshold', parseInt)
+  .option('--badge', 'Print embeddable shields.io badge info after the run')
 
 program.action(async (options) => {
   // List cases mode
@@ -170,6 +172,13 @@ program.action(async (options) => {
         console.log(chalk.gray(`  Saved: ${filename}`))
         console.log()
       }
+    }
+
+    // Print badge info if --badge flag is set
+    if (options.badge) {
+      console.log()
+      console.log(formatBadgeOutput(result.score))
+      console.log()
     }
 
     // Check threshold
