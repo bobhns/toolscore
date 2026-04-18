@@ -7,6 +7,7 @@ import { getCaseCounts, getAllCases } from '../cases/index.js'
 import { parseModel } from '../providers/index.js'
 import type { Dimension, RunOptions } from '../types/index.js'
 import { VERSION } from '../version.js'
+import { runCompare, printCompareTable, toCompareJSON, toCompareMarkdown } from './compare.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -249,5 +250,63 @@ function printDryRun(options: RunOptions): void {
 
   console.log()
 }
+
+program
+  .command('compare <model-a> <model-b>')
+  .description('Compare two models side-by-side')
+  .option('-k, --api-key <key>', 'API key for both models')
+  .option('--api-key-a <key>', 'API key for model A')
+  .option('--api-key-b <key>', 'API key for model B')
+  .option('--base-url-a <url>', 'Base URL for model A')
+  .option('--base-url-b <url>', 'Base URL for model B')
+  .option('-d, --dimension <dim>', 'Run only this dimension')
+  .option('-f, --format <fmt>', 'Output format: terminal (default), json, markdown')
+  .action(async (modelA: string, modelB: string, options) => {
+    console.log()
+    console.log(
+      chalk.bold.white('  toolscore compare') +
+      chalk.gray(' v' + VERSION)
+    )
+    console.log()
+    console.log(`  ${chalk.bold('Model A:')} ${chalk.cyan(modelA)}`)
+    console.log(`  ${chalk.bold('Model B:')} ${chalk.cyan(modelB)}`)
+    console.log()
+
+    const spinner = ora({
+      text: 'Running benchmarks concurrently...',
+      prefixText: '  ',
+      color: 'cyan',
+    }).start()
+
+    try {
+      const result = await runCompare(modelA, modelB, {
+        apiKey: options.apiKey,
+        apiKeyA: options.apiKeyA,
+        apiKeyB: options.apiKeyB,
+        baseUrlA: options.baseUrlA,
+        baseUrlB: options.baseUrlB,
+        dimension: options.dimension,
+        format: options.format,
+      })
+
+      spinner.stop()
+
+      const format = options.format ?? 'terminal'
+      if (format === 'json') {
+        console.log(toCompareJSON(result))
+      } else if (format === 'markdown') {
+        console.log(toCompareMarkdown(result))
+      } else {
+        printCompareTable(result)
+      }
+    } catch (err) {
+      spinner.stop()
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error()
+      console.error(chalk.red(`  Error: ${msg}`))
+      console.error()
+      process.exit(1)
+    }
+  })
 
 program.parse()
