@@ -2,7 +2,7 @@ import { Command } from 'commander'
 import chalk from 'chalk'
 import ora from 'ora'
 import { runBenchmark } from '../core/runner.js'
-import { printScorecard, printProgress, clearProgress, toJSON, toMarkdown, toBadgeUrl, printVerboseCases } from '../reporter/index.js'
+import { printScorecard, printProgress, clearProgress, toJSON, toMarkdown, toTableRow, toBadgeUrl, printVerboseCases } from '../reporter/index.js'
 import { getCaseCounts, getAllCases } from '../cases/index.js'
 import { parseModel } from '../providers/index.js'
 import type { Dimension, RunOptions } from '../types/index.js'
@@ -25,7 +25,7 @@ program
   .option('-n, --cases <number>', 'Number of test cases to run (default: all)', parseInt)
   .option('-t, --timeout <seconds>', 'Timeout per case in seconds (default: 30)', parseInt)
   .option('-c, --concurrency <number>', 'Concurrent requests (default: 3)', parseInt)
-  .option('-f, --format <format>', 'Output format: terminal (default), json, markdown, badge')
+  .option('-f, --format <format>', 'Output format: terminal (default), json, markdown, table-row, badge')
   .option('-o, --output <file>', 'Save results to file')
   .option('--dry-run', 'Show what would run without calling the API')
   .option('--list-cases', 'List test case counts per dimension')
@@ -136,6 +136,19 @@ program.action(async (options) => {
         console.log(chalk.green(`Results saved to ${options.output}`))
       } else {
         console.log(md)
+      }
+    } else if (format === 'table-row') {
+      const row = toTableRow(result, VERSION)
+      if (options.output) {
+        fs.writeFileSync(options.output, row, 'utf8')
+        console.log(chalk.green(`Table row saved to ${options.output}`))
+      } else {
+        console.log()
+        console.log(row)
+        console.log()
+        console.log(chalk.dim('  Open a PR to add your result to the community leaderboard:'))
+        console.log(chalk.dim('  https://github.com/bobhns/toolscore#community-results'))
+        console.log()
       }
     } else if (format === 'badge') {
       const url = toBadgeUrl(result)
